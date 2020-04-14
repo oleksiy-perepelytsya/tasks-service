@@ -46,7 +46,7 @@ class TaskController extends AbstractController
 
         $task = new Task();
         $task->setUserId($userId);
-        $task->setText($request->request->get('text'));
+        $task->setText(trim($request->request->get('text')));
         $task->setStatus(Task::STATUS_NEW);
         $entityManager->persist($task);
         $entityManager->flush();
@@ -62,7 +62,7 @@ class TaskController extends AbstractController
     public function setTaskComplete($userId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $task = $entityManager->getRepository(Task::class)->findOneBy(['userId' => $userId], ['timestamp' => 'ASC']);
+        $task = $entityManager->getRepository(Task::class)->findOneBy(['userId' => $userId, 'status' => Task::STATUS_NEW], ['timestamp' => 'ASC']);
 
         if(!$task){
             return $this->json(['status' => Response::HTTP_NOT_FOUND ]);
