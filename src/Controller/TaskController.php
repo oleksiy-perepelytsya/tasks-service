@@ -20,7 +20,7 @@ class TaskController extends AbstractController
     public function listTasksForUser($userId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $tasks = $entityManager->getRepository(Task::class)->findBy(['userId' => $userId]);
+        $tasks = $entityManager->getRepository(Task::class)->findBy(['userId' => $userId, 'status' => Task::STATUS_NEW], ['timestamp' => 'DESC']);
 
         if(!$tasks){
             return $this->json(['status' => Response::HTTP_NOT_FOUND ]);
@@ -34,7 +34,6 @@ class TaskController extends AbstractController
         return $this->json(['status' => Response::HTTP_OK, 'resource' => $result]);
 
     }
-
     /**
      * @Route("/task/add/user/{userId}", methods={"POST"}))
      * @param string $userId
@@ -56,7 +55,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/task/user/{userId}/completed", methods={"GET"}))
+     * @Route("/task/completed/user/{userId}", methods={"GET"}))
      * @param string $userId
      * @return string
      */
